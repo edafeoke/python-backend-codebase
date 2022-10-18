@@ -5,4 +5,3 @@
 ## Installation
 
     git clone https://github.com/edafeoke/python-backend-codebase.git
-    

@@ -5,6 +5,7 @@ from datetime import datetime
 import sys
 sys.path.append('../../models')
 from models.base_model import BaseModel
+# Import all models that inherit from base_model here
 # from models.user import User
 from os.path import exists
 import json
