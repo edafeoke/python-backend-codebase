@@ -120,7 +120,7 @@ class Console(cmd.Cmd):
                 all_objs.append(str(v))
         print(all_objs)
         return
-    
+
     def do_count(self, args):
         """Prints count of all instances based or not on the class name."""
 
@@ -194,19 +194,53 @@ class Console(cmd.Cmd):
         setattr(obj, attr, value)
         obj.save()
 
-    def onecmd(self, line: str) -> bool:
-        commands = self.parseline(line)
-        if commands[0] not in globals().keys():
-            return super().onecmd(line)
-        else:
-            c = ''
-            i = 0
-            for a in commands[1]:
-                if a != '.' and a!= '(' and a != ')':
-                    c += a
-                    i += 1
-            func = getattr(self, f"do_{c}")
-            func(commands[0])
+    # def onecmd(self, line: str) -> bool:
+    #     commands = self.parseline(line)
+    #     if commands[0] not in globals().keys():
+    #         return super().onecmd(line)
+    #     else:
+    #         c = ''
+    #         i = 0
+    #         for a in commands[1]:
+    #             if a != '.' and a!= '(' and a != ')':
+    #                 c += a
+    #                 i += 1
+    #         func = getattr(self, f"do_{c}")
+    #         func(commands[0])
+
+    def onecmd(self, line):
+        """Interpret the argument as though it had been typed in response
+        to the prompt.
+        Checks whether this line is typed at the normal prompt or in
+        a breakpoint command list definition.
+        """
+        try:
+            classname, command = line.split('.')
+            if classname not in globals():
+                return cmd.Cmd.onecmd(self, line)
+            else:
+                if command == 'all()' or command == 'all':
+                    self.do_all(classname)
+                    return
+                elif command == 'count()' or command == 'count':
+                    counter = 0
+                    all_objs = models.storage.all()
+                    for k in all_objs.keys():
+                        key = k.split('.')
+                        if key[0] == classname:
+                            counter += 1
+                    print(counter)
+                    return
+                else:
+                    raw = command[command.find('(')+1:command.find(')')]
+                    raw = raw.split(', ')
+                    id = raw[0][1:-1]
+                    c = command[0: command.find('(')]
+                    cm = "{} {} {} {}".format(c, classname, id.replace('"', ''),
+                                              " ".join(raw[1:]))
+                    return cmd.Cmd.onecmd(self, cm)
+        except:
+            return cmd.Cmd.onecmd(self, line)
 
 
 if __name__ == "__main__":
