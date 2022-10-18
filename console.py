@@ -120,6 +120,29 @@ class Console(cmd.Cmd):
                 all_objs.append(str(v))
         print(all_objs)
         return
+    
+    def do_count(self, args):
+        """Prints count of all instances based or not on the class name."""
+
+        all_objs = []
+        objs = storage.all()
+        if args == '':
+            for v in objs.values():
+                all_objs.append(str(v))
+            print(len(all_objs))
+            return
+
+        args_list = args.split(" ")
+
+        if args_list[0] not in globals().keys():
+            print("** class doesn't exist **")
+            return
+
+        for v in objs.values():
+            if v.__class__.__name__ == args_list[0]:
+                all_objs.append(str(v))
+        print(len(all_objs))
+        return
 
     def do_update(self, args):
         """Updates an instance based on the class name and id by adding or updating attribute
@@ -170,6 +193,20 @@ class Console(cmd.Cmd):
         obj = objs[k]
         setattr(obj, attr, value)
         obj.save()
+
+    def onecmd(self, line: str) -> bool:
+        commands = self.parseline(line)
+        if commands[0] not in globals().keys():
+            return super().onecmd(line)
+        else:
+            c = ''
+            i = 0
+            for a in commands[1]:
+                if a != '.' and a!= '(' and a != ')':
+                    c += a
+                    i += 1
+            func = getattr(self, f"do_{c}")
+            func(commands[0])
 
 
 if __name__ == "__main__":
