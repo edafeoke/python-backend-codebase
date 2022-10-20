@@ -1,14 +1,15 @@
 #!/usr/bin/python3
 """file_storage module"""
 
+import json
+from os.path import exists
+from models.base_model import BaseModel
+from models.state import State
 from datetime import datetime
 import sys
 sys.path.append('../../models')
-from models.base_model import BaseModel
 # Import all models that inherit from base_model here
 # from models.user import User
-from os.path import exists
-import json
 
 
 class FileStorage:
@@ -17,8 +18,15 @@ class FileStorage:
     __file_path = 'file.json'
     __objects = {}
 
-    def all(self):
+    def all(self, cls=None):
         '''returns the dictionary __objects'''
+        if cls:
+            objs = {}
+            for k, v in self.__objects.items():
+                class_name = v.__class__
+                if cls == class_name:
+                    objs[k] = v
+            return objs
         return self.__objects
 
     def new(self, obj):
@@ -48,3 +56,9 @@ class FileStorage:
                     cls = value["__class__"]
                     obj = eval(cls)(**value)
                     self.new(obj)
+
+    def delete(self, obj=None):
+        '''delete obj from __objects if it’s inside'''
+
+        if obj:
+            del self.__objects[f"{obj.__class__.__name__}.{obj.id}"]
