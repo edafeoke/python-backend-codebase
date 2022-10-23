@@ -4,12 +4,12 @@
 import json
 from os.path import exists
 from models.base_model import BaseModel
-from models.state import State
+# from models.state import State
 from datetime import datetime
 import sys
 sys.path.append('../../models')
 # Import all models that inherit from base_model here
-# from models.user import User
+from models.user import User
 
 
 class FileStorage:

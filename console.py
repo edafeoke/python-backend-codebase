@@ -7,6 +7,7 @@ import models
 from models.base_model import BaseModel
 # import all models here
 # from models.user import User
+from models.user import User
 
 
 class Console(cmd.Cmd):

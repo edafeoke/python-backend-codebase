@@ -1,13 +1,25 @@
 #!/usr/bin/python3
 '''base_model module'''
 
+
 from uuid import uuid4
 from datetime import datetime
 import models
+# from models.state import State
+# from models.user import User
+from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, String, INTEGER
+
+
+Base = declarative_base()
 
 
 class BaseModel:
     """base model class"""
+
+    id = Column(String(60), unique=True, nullable=False, primary_key=True)
+    created_at = Column(nullable=False, default=datetime.utcnow())
+    updated_at = Column(nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
         if kwargs:
@@ -24,13 +36,13 @@ class BaseModel:
             self.id = str(uuid4())
             self.created_at = datetime.utcnow()
             self.updated_at = datetime.utcnow()
-            models.storage.new(self)
 
     def __str__(self):
         return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
 
     def save(self):
         self.updated_at = datetime.utcnow()
+        models.storage.new(self)
         models.storage.save()
 
     def to_dict(self):
@@ -39,3 +51,8 @@ class BaseModel:
         obj['updated_at'] = obj['updated_at'].isoformat()
         obj['created_at'] = obj['created_at'].isoformat()
         return obj
+
+    def delete(self):
+        '''delete the current instance from the storage'''
+
+        models.storage.delete(self)
