@@ -17,8 +17,14 @@ class FileStorage:
     __file_path = 'file.json'
     __objects = {}
 
-    def all(self):
+    def all(self, cls=None):
         '''returns the dictionary __objects'''
+        print(cls)
+        if cls:
+            cls_objs = {}
+            if cls.__class__.__name__ in globals().keys():
+                print(cls)
+            return cls_objs
         return self.__objects
 
     def new(self, obj):
@@ -48,3 +54,14 @@ class FileStorage:
                     cls = value["__class__"]
                     obj = eval(cls)(**value)
                     self.new(obj)
+
+    def delete(self, obj=None):
+        '''
+        delete obj from __objects if it’s inside
+        '''
+        
+        if obj:
+            key = obj.__class__.__name__ + '.' + obj.id
+            if key in self.__objects:
+                del self.__objects[key]
+
