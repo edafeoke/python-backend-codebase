@@ -32,11 +32,28 @@ class Console(cmd.Cmd):
             print("** class name missing **")
             return
 
-        if args not in globals().keys():
+        line = self.parseline(args)
+        classname = line[0]
+
+        if classname not in globals().keys():
             print("** class doesn't exist **")
             return
 
-        obj = globals()[args]()
+        params = line[1].split(' ')
+        obj = globals()[classname]()
+        if line[1]:
+            for param in params:
+                k, v = param.split('=')
+                val = ''
+                if v.startswith('"'):
+                    for c in v:
+                        if c != '"':
+                            val += c
+                    setattr(obj, k, val)
+                elif '.' in v:
+                    setattr(obj, k, float(v))
+                else:
+                    setattr(obj, k, int(v))
         obj.save()
         print(obj.id)
 
