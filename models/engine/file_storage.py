@@ -19,11 +19,12 @@ class FileStorage:
 
     def all(self, cls=None):
         '''returns the dictionary __objects'''
-        print(cls)
         if cls:
             cls_objs = {}
-            if cls.__class__.__name__ in globals().keys():
-                print(cls)
+            for k, v in self.__objects.items():
+                class_name = v.__class__
+                if cls == class_name:
+                    cls_objs[k] = v
             return cls_objs
         return self.__objects
 
