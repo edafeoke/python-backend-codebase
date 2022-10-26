@@ -3,10 +3,10 @@
 from os import getenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-from models.base_model import Base
+from models.base_model import Base, BaseModel
 from models.user import User
 
-
+classes = {BaseModel:"BaseModel",User:"User"}
 
 class DBStorage:
     '''DBStorage class'''
@@ -19,21 +19,22 @@ class DBStorage:
         HBNB_MYSQL_PWD = getenv('HBNB_MYSQL_PWD')
         HBNB_MYSQL_HOST = getenv('HBNB_MYSQL_HOST')
         HBNB_MYSQL_DB = getenv('HBNB_MYSQL_DB')
+        HBNB_ENV = getenv('HBNB_ENV')
 
         self.__engine = create_engine(f'mysql+mysqldb://{HBNB_MYSQL_USER}:{HBNB_MYSQL_PWD}@{HBNB_MYSQL_HOST}/{HBNB_MYSQL_DB}', echo=True, pool_pre_ping=True)
-        if ENV == "test":
+        if HBNB_ENV == "test":
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         '''query on the current database session'''
-        if cls:
-            o = {}
-            objs = self.__session.query(cls).all()
-            for obj in objs:
-                k = f"{obj.__class__.__name__}.{obj.id}"
-                o[k] = obj
-        else:
-            return self.__session.query().all()
+        new_dict = {}
+        for clss in classes:
+            if cls is None or cls is classes[clss] or cls is clss:
+                objs = self.__session.query(classes[clss]).all()
+                for obj in objs:
+                    key = obj.__class__.__name__ + '.' + obj.id
+                    new_dict[key] = obj
+        return (new_dict)
 
     def new(self, obj):
         """add the object to the current database session"""

@@ -2,11 +2,11 @@
 """file_storage module"""
 
 from datetime import datetime
-import sys
-sys.path.append('../../models')
+# import sys
+# sys.path.append('../../models')
 from models.base_model import BaseModel
 # Import all models that inherit from base_model here
-# from models.user import User
+from models.user import User
 from os.path import exists
 import json
 
@@ -39,7 +39,10 @@ class FileStorage:
         """serializes __objects to the JSON file (path: __file_path)"""
         json_dict = {}
         for k, v in self.__objects.items():
-            json_dict[k] = v.to_dict()
+            val = v.to_dict()
+            del val['_sa_instance_state']
+            json_dict[k] = val
+            print(json_dict[k])
         with open(self.__file_path, mode='w', encoding='utf-8') as f:
             f.write(json.dumps(json_dict))
 
