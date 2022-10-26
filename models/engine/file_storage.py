@@ -40,9 +40,9 @@ class FileStorage:
         json_dict = {}
         for k, v in self.__objects.items():
             val = v.to_dict()
-            del val['_sa_instance_state']
+            if '_sa_instance_state' in val.keys():
+                del val['_sa_instance_state']
             json_dict[k] = val
-            print(json_dict[k])
         with open(self.__file_path, mode='w', encoding='utf-8') as f:
             f.write(json.dumps(json_dict))
 

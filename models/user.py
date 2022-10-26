@@ -19,13 +19,12 @@ class User(BaseModel, Base):
         password = Column(String(128), nullable=False)
         first_name = Column(String(128), nullable=True)
         last_name = Column(String(128), nullable=True)
-    else:
-        # __tablename__ = 'users'
-        email = ''
-        password = ''
-        first_name = ''
-        last_name = ''
+    
 
     def __init__(self, *args, **kwargs):
-        """initializes user"""
+    #     """initializes user"""
+        self.email = ''
+        self.password = ''
+        self.first_name = ''
+        self.last_name = ''
         super().__init__(*args, **kwargs)
