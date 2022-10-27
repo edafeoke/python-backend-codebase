@@ -4,6 +4,7 @@
 from datetime import datetime
 # import sys
 # sys.path.append('../../models')
+import models
 from models.base_model import BaseModel
 # Import all models that inherit from base_model here
 from models.user import User
@@ -63,9 +64,34 @@ class FileStorage:
         '''
         delete obj from __objects if it’s inside
         '''
-        
+
         if obj:
             key = obj.__class__.__name__ + '.' + obj.id
             if key in self.__objects:
                 del self.__objects[key]
 
+    def get(self, cls, id):
+        '''Returns the object based on the class and its ID, or None if not found'''
+        all_objs = self.__objects
+
+        if cls and id:
+            if f'{cls.__name__}.{id}' in all_objs.keys():
+                return all_objs[f'{cls.__name__}.{id}']
+            return None
+        else:
+            return None
+
+    def count(self, cls=None):
+        """
+        count the number of objects in storage
+        """
+        all_class = globals().values()
+
+        if not cls:
+            count = 0
+            for clas in all_class:
+                count += len(models.storage.all(clas).values())
+        else:
+            count = len(models.storage.all(cls).values())
+
+        return count
