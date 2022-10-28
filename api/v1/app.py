@@ -20,6 +20,9 @@ def close_db(error):
     """ Close Storage """
     storage.close()
 
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 if __name__ == "__main__":
     """ Main Function """

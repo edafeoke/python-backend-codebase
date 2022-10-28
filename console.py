@@ -7,6 +7,7 @@ import models
 from models.base_model import BaseModel
 # import all models here
 from models.user import User
+from models.todo import Todo
 
 
 class Console(cmd.Cmd):
@@ -44,15 +45,22 @@ class Console(cmd.Cmd):
         obj = globals()[classname]()
         if line[1]:
             for param in params:
+                print(param)
                 k, v = param.split('=')
                 val = ''
                 if v.startswith('"'):
                     for c in v:
                         if c != '"':
                             val += c
+                    val_arr = val.split('_')
+                    val = ' '.join(val_arr)
                     setattr(obj, k, val)
                 elif '.' in v:
                     setattr(obj, k, float(v))
+                elif v == 'True':
+                    setattr(obj, k, bool(v))
+                elif v == 'False':
+                    setattr(obj, k, bool(v))
                 else:
                     setattr(obj, k, int(v))
         obj.save()

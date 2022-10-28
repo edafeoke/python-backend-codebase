@@ -5,9 +5,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from models.base_model import Base, BaseModel
 from models.user import User
+from models.todo import Todo
 import models
 
-classes = {User: "User"}
+classes = {User: "User", Todo: "Todo"}
 
 
 class DBStorage:
@@ -38,7 +39,7 @@ class DBStorage:
                 for obj in objs:
                     key = obj.__class__.__name__ + '.' + obj.id
                     new_dict[key] = obj
-            # print(new_dict)
+            print(new_dict)
             return new_dict
 
         if cls in classes.keys():
@@ -98,7 +99,11 @@ class DBStorage:
         """
         count the number of objects in storage
         """
-        if not cls:
+        if cls == None:
             return len(self.all().keys())
         else:
-            return len([cls == c for c in self.all().values()])
+            c = 0
+            for obj in self.all().values():
+                if obj.__class__.__name__ == cls:
+                    c += 1
+            return c
