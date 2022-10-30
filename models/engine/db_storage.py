@@ -39,7 +39,6 @@ class DBStorage:
                 for obj in objs:
                     key = obj.__class__.__name__ + '.' + obj.id
                     new_dict[key] = obj
-            print(new_dict)
             return new_dict
 
         if cls in classes.keys():
