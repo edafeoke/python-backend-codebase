@@ -10,6 +10,8 @@ from os import environ
 # from flask_restplus import Api
 
 
+
+
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 app.register_blueprint(app_views)

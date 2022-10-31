@@ -2,11 +2,13 @@
 """ Blueprint for API """
 from flask import Blueprint
 from flask_restplus import Api
+from api.v1.auth import authorization
 
 app_views = Blueprint('app_views', __name__, url_prefix='/api/v1')
 
 
 api = Api(app_views,
+          authorizations=authorization,
           title="CodeBase API docs",
           version='1.3')
 

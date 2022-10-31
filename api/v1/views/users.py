@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 """ objects that handle all default RestFul API actions for Users """
+from click import password_option
 from flask_restplus import Resource, fields, model
 from models.user import User as Person
 from models import storage
 from api.v1.views import api
 from flask import abort, jsonify, make_response, request
-
+from api.v1.auth import Auth
 
 @api.route('/users', strict_slashes=False)
 class User(Resource):
@@ -39,7 +40,7 @@ class User(Resource):
             abort(400, "Missing email")
         if 'password' not in data:
             abort(400, "Missing password")
-        user = Person()
+        user = Auth().register_user(data['email'], data['password'])
 
         for k, v in data.items():
             setattr(user, k, v)
@@ -47,7 +48,7 @@ class User(Resource):
         u = user.to_dict()
         del u['_sa_instance_state']
         print(u)
-        return jsonify(u), 201
+        return make_response(jsonify(u), 201)
 
 
 @api.route('/users/<user_id>')

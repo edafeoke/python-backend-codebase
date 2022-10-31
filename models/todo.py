@@ -17,7 +17,7 @@ class Todo(BaseModel, Base):
 
     if HBNB_TYPE_STORAGE == 'db':
         title = Column(String(256), nullable=False)
-        user_id = Column(String(256),  ForeignKey('users.id'), nullable=False,)
+        user_id = Column(String(256),  ForeignKey('users.id'), nullable=False)
         isCompleted = Column(Boolean, default=False)
 
 
